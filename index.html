@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Revelation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary: #8B4513;
+            --secondary: #D4AF37;
+            --accent: #C19A6B;
+            --dark: #1a1a1a;
+            --darker: #0d0d0d;
+            --light: #f5f5f5;
+            --elegant: #2c2c2c;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            min-height: 100vh;
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        
+        .scroll-container {
+            min-height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+        
+        .section {
+            min-height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(30, 30, 30, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        
+        .header {
+            background: linear-gradient(45deg, rgba(30, 30, 30, 0.9), rgba(50, 50, 50, 0.9));
+            color: var(--light);
+            text-align: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .header h1 {
+            font-size: clamp(2rem, 5vw, 3.2rem);
+            margin-bottom: 15px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        
+        .header p {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            opacity: 0.8;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        
+        .puzzle-container {
+            padding: 40px 20px;
+            position: relative;
+            min-height: 60vh;
+        }
+        
+        .puzzle-step {
+            display: none;
+            animation: fadeIn 0.8s ease;
+        }
+        
+        .puzzle-step.active {
+            display: block;
+        }
+        
+        .puzzle-title {
+            color: var(--secondary);
+            margin-bottom: 25px;
+            text-align: center;
+            font-size: clamp(1.5rem, 4vw, 2rem);
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .puzzle-description {
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--light);
+            line-height: 1.6;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            opacity: 0.9;
+            font-weight: 300;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .puzzle-input {
+            width: 100%;
+            padding: 18px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 10px;
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            transition: all 0.3s;
+            background: rgba(40, 40, 40, 0.8);
+            color: var(--light);
+            text-align: center;
+            letter-spacing: 1px;
+        }
+        
+        .puzzle-input:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+        
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .option {
+            padding: 20px 15px;
+            background: rgba(50, 50, 50, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+            font-weight: 300;
+            letter-spacing: 1px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .option:hover {
+            background: rgba(70, 70, 70, 0.8);
+            border-color: var(--secondary);
+            transform: translateY(-2px);
+        }
+        
+        .option.selected {
+            background: rgba(212, 175, 55, 0.1);
+            border-color: var(--secondary);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        .btn {
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 0 auto;
+            font-weight: 400;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            min-width: 200px;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(139, 69, 19, 0.4);
+        }
+        
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+        
+        .success {
+            background-color: rgba(76, 175, 80, 0.1);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+        
+        .error {
+            background-color: rgba(244, 67, 54, 0.1);
+            color: #F44336;
+            border: 1px solid rgba(244, 67, 54, 0.3);
+        }
+        
+        .birthday-wish {
+            text-align: center;
+            padding: 60px 20px;
+            display: none;
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .birthday-wish.active {
+            display: flex;
+            animation: grandReveal 2s ease-out;
+        }
+        
+        .birthday-image {
+            width: min(450px, 80vw);
+            height: min(450px, 80vw);
+            object-fit: cover;
+            margin: 0 auto 40px;
+            border: 3px solid var(--secondary);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.4);
+            position: relative;
+            z-index: 10;
+        }
+        
+        .wish-text {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            color: var(--light);
+            line-height: 1.8;
+            margin-bottom: 40px;
+            font-weight: 300;
+            letter-spacing: 1px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 10px;
+        }
+        
+        .name-highlight {
+            color: var(--secondary);
+            font-weight: 400;
+            font-size: clamp(1.4rem, 5vw, 2.2rem);
+        }
+        
+        .signature {
+            font-style: italic;
+            color: var(--accent);
+            font-size: clamp(1.1rem, 3vw, 1.5rem);
+            margin-top: 30px;
+            font-weight: 300;
+        }
+        
+        .progress-bar {
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-bottom: 40px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            padding: 0 10px;
+            gap: 10px;
+        }
+        
+        .step {
+            flex: 1;
+            max-width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s;
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 1.2rem;
+        }
+        
+        .step.active {
+            background-color: var(--secondary);
+            color: var(--dark);
+            transform: scale(1.1);
+        }
+        
+        .step.completed {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        /* Themed Backgrounds */
+        .time-theme {
+            background: 
+                linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path d="M50,10 A40,40 0 1,1 50,90 A40,40 0 1,1 50,10 Z" fill="white"/><line x1="50" y1="50" x2="50" y2="20" stroke="white" stroke-width="2"/><line x1="50" y1="50" x2="70" y2="50" stroke="white" stroke-width="2"/></svg>');
+            background-size: cover, 200px;
+        }
+        
+        .harry-potter-theme {
+            background: 
+                linear-gradient(135deg, var(--darker) 0%, #2c1a4d 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path d="M50,10 L60,40 L95,40 L65,60 L75,95 L50,75 L25,95 L35,60 L5,40 L40,40 Z" fill="white"/></svg>');
+            background-size: cover, 150px;
+        }
+        
+        .marvel-theme {
+            background: 
+                linear-gradient(135deg, var(--darker) 0%, #2a1a3d 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><circle cx="50" cy="50" r="40" fill="none" stroke="white" stroke-width="2"/><path d="M30,30 L70,70 M70,30 L30,70" stroke="white" stroke-width="2"/></svg>');
+            background-size: cover, 180px;
+        }
+        
+        .medical-theme {
+            background: 
+                linear-gradient(135deg, var(--darker) 0%, #1a2d3a 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.03"><path d="M50,20 L80,80 L20,80 Z" fill="none" stroke="white" stroke-width="2"/><circle cx="50" cy="45" r="10" fill="none" stroke="white" stroke-width="2"/></svg>');
+            background-size: cover, 160px;
+        }
+        
+        .celebration-theme {
+            background: 
+                linear-gradient(135deg, var(--darker) 0%, #3d2a1a 100%),
+                url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.05"><path d="M50,5 L60,40 L95,40 L65,60 L75,95 L50,75 L25,95 L35,60 L5,40 L40,40 Z" fill="gold"/><circle cx="20" cy="20" r="5" fill="gold"/><circle cx="80" cy="30" r="5" fill="gold"/><circle cx="30" cy="80" r="5" fill="gold"/></svg>');
+            background-size: cover, 120px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes grandReveal {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Celebration Elements */
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .popper {
+            position: absolute;
+            width: 8px;
+            height: 20px;
+            background: var(--secondary);
+            border-radius: 4px;
+            pointer-events: none;
+            z-index: 5;
+        }
+        
+        .ribbon {
+            position: absolute;
+            width: 100px;
+            height: 8px;
+            background: linear-gradient(45deg, var(--secondary), var(--primary));
+            pointer-events: none;
+            z-index: 5;
+            transform-origin: left;
+        }
+        
+        .sky-shot {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 5;
+            box-shadow: 0 0 10px white;
+        }
+        
+        .celebration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 20;
+            display: none;
+        }
+        
+        .celebration-overlay.active {
+            display: block;
+        }
+        
+        .golden-border {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 2px solid transparent;
+            pointer-events: none;
+            z-index: 15;
+            animation: borderPulse 2s infinite;
+        }
+        
+        .birthday-wish.active .golden-border {
+            border-color: var(--secondary);
+        }
+        
+        @keyframes borderPulse {
+            0% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.8); }
+            100% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.5); }
+        }
+        
+        .scroll-indicator {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: var(--secondary);
+            font-size: 2rem;
+            animation: bounce 2s infinite;
+            z-index: 100;
+            opacity: 0.7;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0) translateX(-50%);}
+            40% {transform: translateY(-20px) translateX(-50%);}
+            60% {transform: translateY(-10px) translateX(-50%);}
+        }
+        
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translate(0, 0px); }
+            50% { transform: translate(0, -15px); }
+            100% { transform: translate(0, 0px); }
+        }
+        
+        /* Mobile Optimizations */
+        @media (max-width: 768px) {
+            .section {
+                padding: 10px;
+            }
+            
+            .container {
+                border-radius: 15px;
+            }
+            
+            .header {
+                padding: 30px 15px;
+            }
+            
+            .puzzle-container {
+                padding: 30px 15px;
+            }
+            
+            .options-container {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .option {
+                min-height: 70px;
+                padding: 15px 10px;
+            }
+            
+            .btn {
+                padding: 15px 20px;
+                font-size: 1.1rem;
+            }
+            
+            .step {
+                max-width: 50px;
+                height: 50px;
+                font-size: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .header {
+                padding: 20px 10px;
+            }
+            
+            .puzzle-container {
+                padding: 20px 10px;
+            }
+            
+            .birthday-wish {
+                padding: 40px 15px;
+            }
+            
+            .wish-text {
+                line-height: 1.6;
+            }
+        }
+        
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <div class="celebration-overlay" id="celebrationOverlay"></div>
+    
+    <div class="scroll-container">
+        <!-- Puzzle 1 Section -->
+        <section class="section time-theme" id="section1">
+            <div class="scroll-indicator">
+                <i class="fas fa-chevron-down"></i>
+            </div>
+            <div class="container">
+                <div class="golden-border"></div>
+                
+                <div class="header">
+                    <h1>THE REVELATION</h1>
+                    <p>Decipher the codes to unlock the message</p>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress" id="progress"></div>
+                </div>
+                
+                <div class="step-indicator">
+                    <div class="step completed">1</div>
+                    <div class="step active">2</div>
+                    <div class="step">3</div>
+                    <div class="step">4</div>
+                </div>
+                
+                <div class="puzzle-container">
+                    <div class="puzzle-step active" id="step1">
+                        <h2 class="puzzle-title">Chronological Cipher</h2>
+                        <p class="puzzle-description">
+                            A significant temporal marker: When you completed five solar cycles, what was the encoded date in DDMMYYYY format?
+                        </p>
+                        <input type="text" class="puzzle-input" id="answer1" placeholder="Enter chronological code">
+                        <div class="options-container">
+                            <div class="option" onclick="selectOption(1, '01112010')">01112010</div>
+                            <div class="option" onclick="selectOption(1, '01112011')">01112011</div>
+                            <div class="option" onclick="selectOption(1, '01112012')">01112012</div>
+                            <div class="option" onclick="selectOption(1, '01112009')">01112009</div>
+                        </div>
+                        <button class="btn" onclick="checkAnswer(1)">Validate</button>
+                        <div class="message" id="message1"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Puzzle 2 Section -->
+        <section class="section harry-potter-theme" id="section2" style="display: none;">
+            <div class="container">
+                <div class="puzzle-container">
+                    <div class="puzzle-step active" id="step2">
+                        <h2 class="puzzle-title">Arcane Artifact</h2>
+                        <p class="puzzle-description">
+                            Within the wizarding archives, what core component empowers Hermione Granger's wand?
+                        </p>
+                        <input type="text" class="puzzle-input" id="answer2" placeholder="Enter magical composition">
+                        <div class="options-container">
+                            <div class="option" onclick="selectOption(2, 'phoenix feather')">Phoenix Feather</div>
+                            <div class="option" onclick="selectOption(2, 'unicorn hair')">Unicorn Hair</div>
+                            <div class="option" onclick="selectOption(2, 'dragon heartstring')">Dragon Heartstring</div>
+                            <div class="option" onclick="selectOption(2, 'veela hair')">Veela Hair</div>
+                        </div>
+                        <button class="btn" onclick="checkAnswer(2)">Authenticate</button>
+                        <div class="message" id="message2"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Puzzle 3 Section -->
+        <section class="section marvel-theme" id="section3" style="display: none;">
+            <div class="container">
+                <div class="puzzle-container">
+                    <div class="puzzle-step active" id="step3">
+                        <h2 class="puzzle-title">Intelligent System</h2>
+                        <p class="puzzle-description">
+                            I am the artificial intelligence companion to an innovative engineer in advanced armor. What is my designation?
+                        </p>
+                        <input type="text" class="puzzle-input" id="answer3" placeholder="Enter system identifier">
+                        <div class="options-container">
+                            <div class="option" onclick="selectOption(3, 'friday')">FRIDAY</div>
+                            <div class="option" onclick="selectOption(3, 'jarvis')">J.A.R.V.I.S.</div>
+                            <div class="option" onclick="selectOption(3, 'ultron')">ULTRON</div>
+                            <div class="option" onclick="selectOption(3, 'vision')">VISION</div>
+                        </div>
+                        <button class="btn" onclick="checkAnswer(3)">Verify</button>
+                        <div class="message" id="message3"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Puzzle 4 Section -->
+        <section class="section medical-theme" id="section4" style="display: none;">
+            <div class="container">
+                <div class="puzzle-container">
+                    <div class="puzzle-step active" id="step4">
+                        <h2 class="puzzle-title">Medical Terminology</h2>
+                        <p class="puzzle-description">
+                            What is the precise anatomical designation for the human vocal apparatus?
+                        </p>
+                        <input type="text" class="puzzle-input" id="answer4" placeholder="Enter medical term">
+                        <div class="options-container">
+                            <div class="option" onclick="selectOption(4, 'pharynx')">Pharynx</div>
+                            <div class="option" onclick="selectOption(4, 'larynx')">Larynx</div>
+                            <div class="option" onclick="selectOption(4, 'trachea')">Trachea</div>
+                            <div class="option" onclick="selectOption(4, 'esophagus')">Esophagus</div>
+                        </div>
+                        <button class="btn" onclick="checkAnswer(4)">Confirm</button>
+                        <div class="message" id="message4"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Birthday Wish Section -->
+        <section class="section celebration-theme" id="birthdaySection" style="display: none;">
+            <div class="container">
+                <div class="birthday-wish" id="birthdayWish">
+                    <img src="ANAK!.png" alt="Ananya" class="birthday-image floating" id="birthdayImage">
+                    <div class="wish-text">
+                        YOO THEREEE !!!!<span class="name-highlight">ANANYAKKA</span><br><br>
+                        HAPPY 19TH BIRTHDAY<br><br>
+                        Today we celebrate the remarkable individual you are becoming -<br>
+                        a scholar of medicine, a connoisseur of literature, and an inspiration to me.<br><br>
+                        May this year bring you wisdom, success, and profound fulfillment.
+                    </div>
+                    <div class="signature">With utmost admiration,<br>ABHI</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Current step
+        let currentStep = 1;
+        const totalSteps = 4;
+        
+        // Update progress bar
+        function updateProgress() {
+            const progress = document.getElementById('progress');
+            const percentage = ((currentStep - 1) / totalSteps) * 100;
+            progress.style.width = `${percentage}%`;
+            
+            // Update step indicators
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < currentStep) {
+                    step.classList.add('completed');
+                } else if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+        }
+        
+        // Select option
+        function selectOption(step, value) {
+            // Clear previous selections
+            const options = document.querySelectorAll(`#step${step} .option`);
+            options.forEach(option => option.classList.remove('selected'));
+            
+            // Select current option
+            event.target.classList.add('selected');
+            
+            // Set input value
+            document.getElementById(`answer${step}`).value = value;
+        }
+        
+        // Check answers
+        function checkAnswer(step) {
+            const answerInput = document.getElementById(`answer${step}`);
+            const message = document.getElementById(`message${step}`);
+            const answer = answerInput.value.trim().toLowerCase();
+            
+            let correct = false;
+            
+            switch(step) {
+                case 1:
+                    if (answer === '01112011') correct = true;
+                    break;
+                case 2:
+                    if (answer === 'dragon heartstring') correct = true;
+                    break;
+                case 3:
+                    if (answer === 'jarvis' || answer === 'j.a.r.v.i.s.') correct = true;
+                    break;
+                case 4:
+                    if (answer === 'larynx') correct = true;
+                    break;
+            }
+            
+            if (correct) {
+                message.textContent = getSuccessMessage(step);
+                message.className = "message success";
+                
+                // Move to next step after a delay
+                setTimeout(() => {
+                    if (step < totalSteps) {
+                        // Hide current section, show next
+                        document.getElementById(`section${step}`).style.display = 'none';
+                        currentStep = step + 1;
+                        document.getElementById(`section${currentStep}`).style.display = 'flex';
+                        updateProgress();
+                        
+                        // Scroll to next section
+                        document.getElementById(`section${currentStep}`).scrollIntoView({ behavior: 'smooth' });
+                    } else {
+                        // All puzzles solved
+                        document.getElementById(`section${step}`).style.display = 'none';
+                        document.getElementById('birthdaySection').style.display = 'flex';
+                        document.getElementById('birthdayWish').classList.add('active');
+                        
+                        // Scroll to birthday section
+                        document.getElementById('birthdaySection').scrollIntoView({ behavior: 'smooth' });
+                        
+                        startGrandCelebration();
+                    }
+                }, 1500);
+            } else {
+                message.textContent = "Verification failed. Please try again.";
+                message.className = "message error";
+            }
+        }
+        
+        // Get success message
+        function getSuccessMessage(step) {
+            const messages = [
+                "Chronological cipher validated. Proceeding...",
+                "Arcane artifact authenticated. Continuing...",
+                "Intelligent system verified. Advancing...",
+                "Medical terminology confirmed. Finalizing..."
+            ];
+            return messages[step - 1];
+        }
+        
+        // Grand celebration effects
+        function startGrandCelebration() {
+            const overlay = document.getElementById('celebrationOverlay');
+            overlay.classList.add('active');
+            
+            // Create multiple celebration effects
+            createFireworks();
+            createPoppers();
+            createRibbons();
+            createSkyShots();
+            
+            // Add sound simulation (visual feedback since we can't play audio automatically)
+            setTimeout(() => {
+                createVisualSoundWaves();
+            }, 500);
+        }
+        
+        function createFireworks() {
+            const colors = ['#D4AF37', '#8B4513', '#C19A6B', '#FFFFFF', '#FFD700'];
+            
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.className = 'firework';
+                    firework.style.left = Math.random() * 100 + 'vw';
+                    firework.style.top = Math.random() * 100 + 'vh';
+                    firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    document.getElementById('celebrationOverlay').appendChild(firework);
+                    
+                    // Animate firework explosion
+                    setTimeout(() => {
+                        firework.style.transform = 'scale(20)';
+                        firework.style.opacity = '0';
+                        setTimeout(() => {
+                            if (firework.parentNode) {
+                                firework.parentNode.removeChild(firework);
+                            }
+                        }, 1000);
+                    }, 100);
+                }, i * 200);
+            }
+        }
+        
+        function createPoppers() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const popper = document.createElement('div');
+                    popper.className = 'popper';
+                    popper.style.left = Math.random() * 100 + 'vw';
+                    popper.style.top = '100vh';
+                    popper.style.backgroundColor = i % 2 === 0 ? '#D4AF37' : '#8B4513';
+                    document.getElementById('celebrationOverlay').appendChild(popper);
+                    
+                    // Animate popper
+                    const angle = Math.random() * 360;
+                    const distance = 100 + Math.random() * 200;
+                    popper.style.transition = `all ${0.5 + Math.random()}s ease-out`;
+                    popper.style.transform = `translate(${Math.cos(angle) * distance}px, -${Math.sin(angle) * distance}px) rotate(${Math.random() * 360}deg)`;
+                    popper.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        if (popper.parentNode) {
+                            popper.parentNode.removeChild(popper);
+                        }
+                    }, 2000);
+                }, i * 100);
+            }
+        }
+        
+        function createRibbons() {
+            for (let i = 0; i < 40; i++) {
+                setTimeout(() => {
+                    const ribbon = document.createElement('div');
+                    ribbon.className = 'ribbon';
+                    ribbon.style.left = Math.random() * 100 + 'vw';
+                    ribbon.style.top = Math.random() * 100 + 'vh';
+                    ribbon.style.transform = `rotate(${Math.random() * 360}deg)`;
+                    document.getElementById('celebrationOverlay').appendChild(ribbon);
+                    
+                    // Animate ribbon
+                    setTimeout(() => {
+                        ribbon.style.transform += ' scale(0)';
+                        ribbon.style.opacity = '0';
+                        setTimeout(() => {
+                            if (ribbon.parentNode) {
+                                ribbon.parentNode.removeChild(ribbon);
+                            }
+                        }, 1000);
+                    }, 500);
+                }, i * 150);
+            }
+        }
+        
+        function createSkyShots() {
+            for (let i = 0; i < 20; i++) {
+                setTimeout(() => {
+                    const shot = document.createElement('div');
+                    shot.className = 'sky-shot';
+                    shot.style.left = Math.random() * 100 + 'vw';
+                    shot.style.top = '100vh';
+                    document.getElementById('celebrationOverlay').appendChild(shot);
+                    
+                    // Animate sky shot
+                    shot.style.transition = `all ${1 + Math.random()}s ease-out`;
+                    shot.style.top = Math.random() * 50 + 'vh';
+                    shot.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        if (shot.parentNode) {
+                            shot.parentNode.removeChild(shot);
+                        }
+                    }, 2000);
+                }, i * 300);
+            }
+        }
+        
+        function createVisualSoundWaves() {
+            for (let i = 0; i < 10; i++) {
+                const wave = document.createElement('div');
+                wave.style.position = 'fixed';
+                wave.style.left = '50%';
+                wave.style.top = '50%';
+                wave.style.width = '10px';
+                wave.style.height = '10px';
+                wave.style.border = '2px solid rgba(212, 175, 55, 0.7)';
+                wave.style.borderRadius = '50%';
+                wave.style.transform = 'translate(-50%, -50%)';
+                wave.style.pointerEvents = 'none';
+                wave.style.zIndex = '25';
+                document.body.appendChild(wave);
+                
+                // Animate wave
+                setTimeout(() => {
+                    wave.style.transition = 'all 1s ease-out';
+                    wave.style.width = '500px';
+                    wave.style.height = '500px';
+                    wave.style.opacity = '0';
+                    
+                    setTimeout(() => {
+                        if (wave.parentNode) {
+                            wave.parentNode.removeChild(wave);
+                        }
+                    }, 1000);
+                }, i * 200);
+            }
+        }
+        
+        // Allow Enter key to submit answers
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkAnswer(currentStep);
+            }
+        });
+        
+        // Initialize
+        updateProgress();
+        
+        // Hide scroll indicator after first scroll
+        window.addEventListener('scroll', function() {
+            const indicator = document.querySelector('.scroll-indicator');
+            if (window.scrollY > 100) {
+                indicator.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>
